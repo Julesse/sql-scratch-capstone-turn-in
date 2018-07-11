@@ -1,0 +1,84 @@
+ 
+Select count(distinct(utm_campaign) ) as 'No_of_Campaign'
+from page_visits;
+    
+Select count(distinct(utm_source)) as 'No_of_sources'
+from page_visits;
+
+
+Select utm_campaign, utm_source
+from page_visits
+Group by utm_campaign;
+                                                    
+
+
+ 
+Select distinct (page_name)
+from page_visits;
+
+
+
+WITH first_touch AS (
+    SELECT user_id,
+        MIN(timestamp) as first_touch_at
+    FROM page_visits
+    GROUP BY user_id)
+    
+SELECT pv.utm_campaign, count(ft.user_id)
+as No_of_first_touch 
+From first_touch ft
+JOIN page_visits pv
+    ON ft.user_id = pv.user_id
+    AND ft.first_touch_at = pv.timestamp
+Group by pv.utm_campaign
+order by count(ft.user_id) desc;
+
+
+ 
+
+
+WITH last_touch AS (
+    SELECT user_id,
+        max(timestamp) as last_touch_at
+    FROM page_visits
+    GROUP BY user_id)
+SELECT pv.utm_campaign, count(lt.user_id) as 'No_of_last_touch'
+FROM last_touch lt
+JOIN page_visits pv
+    ON lt.user_id = pv.user_id
+    AND lt.last_touch_at = pv.timestamp
+Group by pv.utm_campaign
+Order by count(lt.user_id) desc;
+
+
+
+select count(distinct(user_id)) as 'No_of_purchase'
+from page_visits
+where page_name = '4 - purchase' 
+                      
+Select count(distinct(user_id))
+as 'No_of_visitors'
+from page_visits; 
+                    
+                      
+
+WITH last_touch AS (
+    SELECT user_id,
+        max(timestamp) as last_touch_at
+    FROM page_visits
+    GROUP BY user_id)
+SELECT pv.utm_campaign, count(lt.user_id) as 'No_of_last_touch'
+FROM last_touch lt
+JOIN page_visits pv
+    ON lt.user_id = pv.user_id
+    AND lt.last_touch_at = pv.timestamp
+Where pv.page_name = '4 - purchase'
+Group by pv.utm_campaign
+order by count(lt.user_id) desc
+;
+
+
+ select page_name, count(distinct(user_id)) as No_of_visitorsper_page
+ from page_visits
+ Group by page_name
+ Order by count(distinct(user_id)) desc ;
